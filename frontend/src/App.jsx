@@ -5,6 +5,7 @@ import SignupPage from "./pages/SignupPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import SettingsPage from "./pages/SettingsPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import { Toaster } from "react-hot-toast";
 
 import { useAuthStore } from "./store/useAuthStore.js";
 import { useEffect } from "react";
@@ -29,6 +30,7 @@ export default function App() {
   return (
     <div>
       <Navbar />
+
       <Routes>
         <Route
           path="/"
@@ -48,6 +50,7 @@ export default function App() {
           element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
         />
       </Routes>
+      <Toaster />
     </div>
   );
 }

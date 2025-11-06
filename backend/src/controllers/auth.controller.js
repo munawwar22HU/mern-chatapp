@@ -36,7 +36,10 @@ const signup = async (req, res) => {
         _id: newUser._id,
         email: newUser.email,
         fullName: newUser.fullName,
+        profilePicture: newUser.profilePicture,
       });
+    } else {
+      res.status(400).json({ message: "Invalid user data" });
     }
   } catch (error) {
     console.error("Error during signup:", error.message);
