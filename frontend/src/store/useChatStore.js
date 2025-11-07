@@ -1,41 +1,52 @@
-import {create} from 'zustand';
-import toast from 'react-hot-toast';
+import { create } from "zustand";
+import toast from "react-hot-toast";
 import axiosInstance from "../lib/axios.js";
 
-export const useChatStore = create((set) =>({
-    messages: [],
-    users: [],
-    selectedUser: null,
-    isUsersLoading: false,
-    isMessagesLoading: false,
+export const useChatStore = create((set, get) => ({
+  messages: [],
+  users: [],
+  selectedUser: null,
+  isUsersLoading: false,
+  isMessagesLoading: false,
 
-    getUsers: async () => {
-        set({isUsersLoading: true});
-        try {
-            const response = await axiosInstance.get('/messages/users');
-            set({users: response.data});
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to fetch users');
-        } finally {
-            set({isUsersLoading: false});
-        }
-    },
-    getMessages: async (userId) => {
-        set({isMessagesLoading: true });
-        try {
-            const response = await axiosInstance.get(`/messages/${userId}`);
-            set({messages: response.data});
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to fetch messages');
-        } finally {
-            set({isMessagesLoading: false });
-        }
-    },
-    //todo: optimize this one later
-    setSelectedUser: (selectedUser) => {
-        set({ selectedUser });
-    },
-
-
+  getUsers: async () => {
+    set({ isUsersLoading: true });
+    try {
+      const response = await axiosInstance.get("/messages/users");
+      set({ users: response.data });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to fetch users");
+    } finally {
+      set({ isUsersLoading: false });
+    }
+  },
+  getMessages: async (userId) => {
+    set({ isMessagesLoading: true });
+    try {
+      const response = await axiosInstance.get(`/messages/${userId}`);
+      set({ messages: response.data });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to fetch messages");
+    } finally {
+      set({ isMessagesLoading: false });
+    }
+  },
+  sendMessage: async (data) => {
+    
+    const { selectedUser, messages } = get();
+    console.log("Sending message with data:", data, selectedUser._id);
+    try {
+      const res = await axiosInstance.post(
+        `/messages/send/${selectedUser._id}`,
+        data
+      );
+      set({ messages: [...messages, res.data] });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to send message");
+    }
+  },
+  //todo: optimize this one later
+  setSelectedUser: (selectedUser) => {
+    set({ selectedUser });
+  },
 }));
-
